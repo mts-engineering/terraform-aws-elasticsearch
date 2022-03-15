@@ -148,6 +148,9 @@ resource "aws_elasticsearch_domain" "es_domain" {
   # Service-linked role to give Amazon ES permissions to access your VPC
   depends_on = [aws_iam_service_linked_role.es, aws_cloudwatch_log_group.es_cloudwatch_log_group]
 
+  lifecycle {
+    prevent_destroy = var.prevent_destroy
+  }
 }
 
 locals {

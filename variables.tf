@@ -345,3 +345,9 @@ variable "create_service_link_role" {
   type        = bool
   default     = true
 }
+
+variable "prevent_destroy" {
+  description = "Set the prevent_destroy lifecycle value on the elasticsearch domain resource"
+  type = bool
+  default = false
+}
