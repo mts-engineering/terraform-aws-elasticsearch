@@ -83,6 +83,13 @@ resource "aws_elasticsearch_domain" "es_domain" {
       warm_count               = lookup(cluster_config.value, "warm_count")
       warm_type                = lookup(cluster_config.value, "warm_type")
 
+      dynamic "cold_storage_options" {
+        for_each = lookup(cluster_config.value, "cold_storage_options_enabled", false) ? [1] : []
+        content {
+          enabled = lookup(cluster_config.value, "cold_storage_options_enabled", false)
+        }
+      }
+
       dynamic "zone_awareness_config" {
         # cluster_availability_zone_count valid values: 2 or 3.
         for_each = lookup(cluster_config.value, "zone_awareness_enabled", false) ? [1] : []
@@ -379,16 +386,17 @@ locals {
   # cluster_config
   # If no cluster_config list is provided, build a cluster_config using the default values
   cluster_config_default = {
-    instance_type            = lookup(var.cluster_config, "instance_type", null) == null ? var.cluster_config_instance_type : lookup(var.cluster_config, "instance_type")
-    instance_count           = lookup(var.cluster_config, "instance_count", null) == null ? var.cluster_config_instance_count : lookup(var.cluster_config, "instance_count")
-    dedicated_master_enabled = lookup(var.cluster_config, "dedicated_master_enabled", null) == null ? var.cluster_config_dedicated_master_enabled : lookup(var.cluster_config, "dedicated_master_enabled")
-    dedicated_master_type    = lookup(var.cluster_config, "dedicated_master_type", null) == null ? var.cluster_config_dedicated_master_type : lookup(var.cluster_config, "dedicated_master_type")
-    dedicated_master_count   = lookup(var.cluster_config, "dedicated_master_count", null) == null ? var.cluster_config_dedicated_master_count : lookup(var.cluster_config, "dedicated_master_count")
-    zone_awareness_enabled   = lookup(var.cluster_config, "zone_awareness_enabled", null) == null ? var.cluster_config_zone_awareness_enabled : lookup(var.cluster_config, "zone_awareness_enabled")
-    availability_zone_count  = lookup(var.cluster_config, "availability_zone_count", null) == null ? var.cluster_config_availability_zone_count : lookup(var.cluster_config, "availability_zone_count")
-    warm_enabled             = lookup(var.cluster_config, "warm_enabled", null) == null ? var.cluster_config_warm_enabled : lookup(var.cluster_config, "warm_enabled")
-    warm_count               = lookup(var.cluster_config, "warm_count", null) == null ? var.cluster_config_warm_count : lookup(var.cluster_config, "warm_count")
-    warm_type                = lookup(var.cluster_config, "warm_type", null) == null ? var.cluster_config_warm_type : lookup(var.cluster_config, "warm_type")
+    instance_type                = lookup(var.cluster_config, "instance_type", null) == null ? var.cluster_config_instance_type : lookup(var.cluster_config, "instance_type")
+    instance_count               = lookup(var.cluster_config, "instance_count", null) == null ? var.cluster_config_instance_count : lookup(var.cluster_config, "instance_count")
+    dedicated_master_enabled     = lookup(var.cluster_config, "dedicated_master_enabled", null) == null ? var.cluster_config_dedicated_master_enabled : lookup(var.cluster_config, "dedicated_master_enabled")
+    dedicated_master_type        = lookup(var.cluster_config, "dedicated_master_type", null) == null ? var.cluster_config_dedicated_master_type : lookup(var.cluster_config, "dedicated_master_type")
+    dedicated_master_count       = lookup(var.cluster_config, "dedicated_master_count", null) == null ? var.cluster_config_dedicated_master_count : lookup(var.cluster_config, "dedicated_master_count")
+    zone_awareness_enabled       = lookup(var.cluster_config, "zone_awareness_enabled", null) == null ? var.cluster_config_zone_awareness_enabled : lookup(var.cluster_config, "zone_awareness_enabled")
+    availability_zone_count      = lookup(var.cluster_config, "availability_zone_count", null) == null ? var.cluster_config_availability_zone_count : lookup(var.cluster_config, "availability_zone_count")
+    warm_enabled                 = lookup(var.cluster_config, "warm_enabled", null) == null ? var.cluster_config_warm_enabled : lookup(var.cluster_config, "warm_enabled")
+    warm_count                   = lookup(var.cluster_config, "warm_count", null) == null ? var.cluster_config_warm_count : lookup(var.cluster_config, "warm_count")
+    warm_type                    = lookup(var.cluster_config, "warm_type", null) == null ? var.cluster_config_warm_type : lookup(var.cluster_config, "warm_type")
+    cold_storage_options_enabled = lookup(var.cluster_config, "cold_storage_options_enabled", null) == null ? var.cluster_config_cold_storage_options_enabled : lookup(var.cluster_config, "cold_storage_options_enabled")
   }
 
   cluster_config = [local.cluster_config_default]
